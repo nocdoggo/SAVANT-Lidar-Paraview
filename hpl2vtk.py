@@ -1,3 +1,4 @@
+# @NocDoggo from GitHub
 # Converts a .hpl LiDAR scan output to VTK data
 # - gates creates vtkPolyData vertex cells
 # - rays creates vtkPolyData polyline cells
@@ -6,6 +7,9 @@
 # - no time information is written out, this has to be figured out yet
 # - User defined scans sweeps have suprious connecting cells between
 #   the ends of adjacent (in time) sweeps.
+
+# This is a Python 3 renovated standalone script
+
 import sys
 from math import radians, sin, cos, pi
 import glob
@@ -248,7 +252,7 @@ class HPL:
 
         # This creates separate vertex cells
 
-        print("MVM: {}".format(pts.GetNumberOfPoints()))
+        print(("MVM: {}".format(pts.GetNumberOfPoints())))
         vts.InsertNextCell(pts.GetNumberOfPoints())
         for i in range(pts.GetNumberOfPoints()):
             vts.InsertCellPoint(i)
