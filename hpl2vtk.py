@@ -236,7 +236,8 @@ class HPL:
             # this is in the modeling stage...
             # hand distributing the matrix multiplication gives
 
-
+            # But seems like the vtk updated with newer edition
+            # Not sure how much of a difference it is gonna make
         self.scan.SetPoints(pts)
         self.scan.GetPointData().AddArray(gateIDScalars)
         self.scan.GetPointData().AddArray(dopplerScalars)
