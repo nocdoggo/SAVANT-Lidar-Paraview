@@ -5,7 +5,7 @@
 #
 # - no time information is written out, this has to be figured out yet
 # - User defined scans sweeps have suprious connecting cells between
-#   the ends of adjacent (in time) sweeps.
+#   the ends of adjacent (in time) sweeps. 
 import sys
 from math import radians, sin, cos, pi
 import glob
@@ -35,7 +35,7 @@ class HPL:
     def _read_header(self, hplfile):
         '''HPL files appear to have a set, predictable header format of 17 lines.
         This function reads the values directly into a dict for later use.
-
+    
         One thing to note is that the header is mix of descriptive data and
         descriptive text.
 
@@ -62,7 +62,7 @@ class HPL:
 
         # RHI and VAD files have --
         # No. of rays in file:   <int beams that were cast.>
-
+        
         # User files have --
         # No. of waypoints in file: <int waypoints set by operator (not clear this used explicitly in file)
 
@@ -89,12 +89,12 @@ class HPL:
         self.header['Resolution (m/s)'] = float(self.header['Resolution (m/s)'])
 
         #   lines 12 - 17 are comments, general info
-        # 12. how to calculate altitude of measuement
+        # 12. how to calculate altitude of measuement 
         # 13. description of what start of a ray sequence will contain
         # 14. ~~ C-style format specifiers for 1st line of ray sequence
         # 15. description of what rest of a ray sequence will contain
         # 16. ~~ C-style format specifiers for the next Num gates lines
-        # 17. header delimiter of 4 asteriks
+        # 17. header delimiter of 4 asteriks 
         # These can be ignored, the important thing is that the file now
         # points to just past the header.
 
@@ -104,7 +104,7 @@ class HPL:
         to the correct spot in the file.
         Read the sequences of LiDAR beam data. These always start after the header on
         line 18.
-        There are 'No. of rays in file' sections.
+        There are 'No. of rays in file' sections. 
         These have 1 initial line with:
         <time> <azimuth> <elevation> <pitch> <roll>
         Followed by 'Number of gates' lines of
@@ -124,7 +124,7 @@ class HPL:
         # these are locals because they get added to self.scan
         pts = vtk.vtkPoints()
         vts = vtk.vtkCellArray()
-
+        
         dopplerScalars = vtk.vtkFloatArray()
         dopplerScalars.SetName('doppler')
         dopplerScalars.SetNumberOfComponents(1)
@@ -161,9 +161,9 @@ class HPL:
             rollScalars = vtk.vtkFloatArray()
             rollScalars.SetName('roll')
             rollScalars.SetNumberOfComponents(1)
-
+        
         beamID = 0
-
+        
         # outer while is each beam
         while True:
             beam = hplfile.readline().strip()
@@ -179,22 +179,22 @@ class HPL:
             # gates along ray
             for g in range(num_gates):
                 gate_ID, doppler, intensity, beta = hplfile.readline().strip().split()
-
+                
                 gateIDScalars.InsertNextValue(int(gate_ID))
                 dopplerScalars.InsertNextValue(float(doppler))
                 intensityScalars.InsertNextValue(float(intensity))
                 betaScalars.InsertNextValue(float(beta))
-                beamIDScalars.InsertNextValue(beamID)
+                beamIDScalars.InsertNextValue(beamID) 
                 azimuthScalars.InsertNextValue(azimuth)
                 elevationScalars.InsertNextValue(elevation)
                 if self.pitchAndRoll:
                     pitchScalars.InsertNextValue(pitch)
                     rollScalars.InsertNextValue(roll)
-                # this behaves as:
+                # this behaves as: 
                 # azimuth 0 is N and increases CW
                 # elevation 0 is vertically straight up and increases towards ground
                 # but what I want is
-                # elevation 0 is horizontally and increases to 90 being straight up.
+                # elevation 0 is horizontally and increases to 90 being straight up. 
                 # IIUC wikipedia says this is the "horizontal" or "topocentric" coordinate
                 # system in the family of celestial coordiantes.
 
@@ -202,7 +202,7 @@ class HPL:
                 y = r * sin(inclination) * cos(razimuth)
                 x = r * sin(inclination) * sin(razimuth)
                 z = r * cos(inclination)
-
+               
                 if self.pitchAndRoll:
                     # blech, hand-transforms
                     pitchedy = y * cos(rpitch) - z * sin(rpitch)
@@ -214,12 +214,12 @@ class HPL:
                     rolledz = -x * sin(rroll) + z * cos(rroll)
                     x = rolledx
                     z = rolledz
-
+                
                 pts.InsertNextPoint([x, y, z])
+                
 
-
-            beamID += 1
-            # could apply pitch and roll here, since they are beam-wise.
+            beamID += 1 
+            # could apply pitch and roll here, since they are beam-wise. 
             # pitch is absolute pitch around East-West axis (X)
             # > 0 means N tilted above S, so azimuth (-90,90) tilt up
             #   and azimuth(90, -90) tilt down
@@ -232,7 +232,7 @@ class HPL:
             # this is in the modeling stage...
             # hand distributing the matrix multiplication gives
 
-
+    
         self.scan.SetPoints(pts)
         self.scan.GetPointData().AddArray(gateIDScalars)
         self.scan.GetPointData().AddArray(dopplerScalars)
@@ -247,18 +247,21 @@ class HPL:
             self.scan.GetPointData().AddArray(rollScalars)
 
         # This creates separate vertex cells
-
+        
         print("MVM: {}".format(pts.GetNumberOfPoints()))
         vts.InsertNextCell(pts.GetNumberOfPoints())
         for i in range(pts.GetNumberOfPoints()):
             vts.InsertCellPoint(i)
 
-
+       
         if self.geomType == 'sweep':
             if self.scanType == 'RHI' or self.scanType == 'VAD':
                 self.scan.SetDimensions([self.header['Number of gates'], self.header['No. of rays in file'], 1])
-            elif self.scanType == 'User':
+            elif self.scanType == 'User1':
                 self.scan.SetDimensions([self.header['Number of gates'], beamID, 1])
+            else:
+                self.scan.SetDimensions([self.header['Number of gates'], beamID, 1])
+
 
         if self.geomType == 'gates':
             self.scan.SetVerts(vts)
@@ -267,7 +270,7 @@ class HPL:
             # I'd rather have multiple cells, I think
             # which means... either inserting after
             self.scan.SetLines(vts)
-
+    
 
     def writePolyData(self, nfile):
         if self.pitchAndRoll:
@@ -285,9 +288,9 @@ class HPL:
         writer.SetFileName(filename)
         writer.SetInputData(self.scan)
         writer.Write()
-
+   
 if __name__ == '__main__':
-    argparser = argparse.ArgumentParser(description='Options for hpl2vtk',
+    argparser = argparse.ArgumentParser(description='Options for hpl2vtk', 
             formatter_class=argparse.RawTextHelpFormatter)
     argparser.add_argument('scanDirectory', help='Directory containing scans of a particular type.')
     argparser.add_argument('scanType', help='LiDAR scan type, one of {RHI|VAD|Stare|User}')
