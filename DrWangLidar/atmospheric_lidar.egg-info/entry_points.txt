@@ -1,0 +1,5 @@
+[console_scripts]
+licel2scc = atmospheric_lidar.scripts.licel2scc:main
+licel2scc-depol = atmospheric_lidar.scripts.licel2scc_depol:main
+licel2tc = atmospheric_lidar.scripts.licel2tc:main
+

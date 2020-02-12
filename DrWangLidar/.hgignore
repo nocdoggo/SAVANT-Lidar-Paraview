@@ -1,0 +1,14 @@
+syntax: glob
+*.pyc
+*.py~
+*.rst~
+re:^readme\.md~$
+*.orig
+.idea/*
+re:^atmospheric_lidar\.egg-info/
+*.nc
+re:^atmospheric_lidar_reader\.egg-info/
+re:^build/
+re:^dist/
+re:^docs/_build/html/
+re:^docs/_build/doctrees/
