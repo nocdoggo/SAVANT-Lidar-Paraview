@@ -1,7 +1,0 @@
-netCDF4
-numpy
-matplotlib
-sphinx
-numpydoc
-pytz
-pyyaml
