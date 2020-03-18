@@ -1,3 +1,6 @@
+# Author: Ioannis Binietoglou  (@ioannib)   at Raymetrics
+# Co-author: Noctis Zhang   (@nocdoggo)     at University of Illinois Illinois State Water Survey
+
 """ Code to read Raymetrics version of Licel binary files."""
 import logging
 
@@ -473,6 +476,7 @@ class ScanningChannel(LicelChannel):
            If True, remove noisy bins.
         noise_threshold : int
            Threshold to use in the noise masking routine.
+           Set to 9 if use dynamic noise removal.
         first_signal_bin : int
            First signal bin. Can be used to fix analog bin shift of Licel channels.
         """
@@ -484,7 +488,7 @@ class ScanningChannel(LicelChannel):
                              cb_format=cb_format, vmin=vmin, vmax=vmax, mask_noise=mask_noise,
                              noise_threshold=noise_threshold, first_signal_bin=first_signal_bin)
 
-        padding = 0.5  # km
+        padding = 0.5  # unit in km
 
         if box:
             ax1.set_xlim(-z_max / 1000. - padding, z_max / 1000. + padding)
