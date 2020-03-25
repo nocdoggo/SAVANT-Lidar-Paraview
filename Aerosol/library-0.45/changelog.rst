@@ -4,6 +4,26 @@ Changelog
 Unreleased
 ----------
 
+0.4.3 - 2020-03-06
+------------------
+Fixed
+~~~~~
+- Dynamic background noise removal out of range issue
+- Lidar tilt adjustment out of range
+
+0.4.2 - 2020-02-09
+------------------
+Fixed
+~~~~~
+- numpy floating cap issue
+- File directory fix for Mac OS/Debian environment
+
+0.4.1 - 2020-02-01
+------------------
+Added
+~~~~~
+- Channel selection for old LB100 model
+
 0.4.1 - 2018-11-29
 ------------------
 Added
