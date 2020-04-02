@@ -387,6 +387,7 @@ class ScanningChannel(LicelChannel):
 
         if show_plot:
             plt.show()
+            plt.savefig('PPI.png')
 
     def draw_ppi(self, ax1, cmap=plt.cm.jet, signal_type='rc',
                  z_min=0, z_max=12000., add_colorbar=True, cmap_label='a.u.', cb_format=None,
